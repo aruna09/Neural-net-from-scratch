@@ -10,8 +10,8 @@ therefore 100 structures. There are two arrays
 */
 //declaring nodes
 struct node{
-	double weights[no_of_examples][no_of_neurons];
-	int features[no_of_examples][no_of_neurons];
+	double weights[n_layers][n_nodes][n_nodes];
+	int features[n_layers][n_nodes];
 	int bias;
 };
 
@@ -24,54 +24,67 @@ void init_data(){
 	//this is where we initialize the weights and the features array;
 
 	// Initializing the weight matrix;
-	for(int i=0;i<no_neurons;i++){
-		for(int j=0;j<no_pixels;j++){
-			weights[i][j] = rand() % 1;
+	for(int i=0;i<n_layers;i++){
+		for(int j=0;j<n_nodes;j++){
+			for(int k=0;k<n_nodes;k++){
+				weights[i][j][k] = rand() % 1;
+			}
 		}
 	}
 
 	// Initializing the bias
-	for(int i=0;i<no_of_layers;i++){
+	for(int i=0;i<n_layers;i++){
 		bias[i] = rand() % 1;
 	}
 
 }
 // Copy 1D array from 2D matrix
-void copy_row1D(int features[][]){
-	for(int i=0;i<no_of_examples;i++){
-		for(int j=0;j<no_of_neurons;j++){
-			copy_row[j] = features[i][j];
+double* copy_row1D(int layer_no, int features[][]){
+		for(int j=0;j<n_nodes;j++){
+			copy_row[j] = features[layer_no][j];
 		}
 		//send the copied row for finding the dot product.
-		find_dot_product(copy_row, weights, bias);
+		return copy_row
 	}
-}
 
 // Copy transformed 1D feature array into the 2D matrix.
-void copy_row2D(int features[][]), int copy[]{
-	for(int i=0;i<no_of_examples;i++){
-		for(int j=0;j<no_of_neurons;j++){
-			features[i][j] = copy[j];
+void copy_row2D(int layer_no, int features[][]), int copy[]{
+		for(int j=0;j<n_nodes;j++){
+			features[layer_no][j] = copy[j];
 		}
-	}
 }
 void find_dot_product(int feature_1D[], double weight[no_of_examples][no_of_neurons], double bias[]){
 	//calculate WX + b
-	double sum;
+	double sum[];
 
-	for(int i=0;i<no_of_examples;i++){
-		for(int j=0;j<no_of_neurons;j++){
-			sum += feature_1D[i]*weight[i][j];
+	for(int i=0;i<n_layers;i++){
+		double features_1D* = copy_row1D(i);
+		for(int j=0;j<n_nodes;j++){
+			for(int k=0;k<n_nodes;k++){
+				sum[j] += feature_1D[j]*weight[i][j][k];
+			}
+			sum[j] = sum[j]+bias[j];
+			feature_1D[j] = activation_function(sum[i]);
 		}
-		sum = sum+bias[i];
-		feature_1D[i] = activation_function(sum);
+		copy_row2D(feature_1D);
 	}
-	copy_row2D(feature_1D);
 }
-double activation_function(int x){
+double sigmoid(int x){
 	//define the sigmoid function
 	double temp;
 	temp = 1/1+exp(-x)
+	return temp;
+}
+
+double compute_cost(){
+	//compute the cost: MSE
+
+	int mse;
+	for()
+}
+double sigmoid_derivative(double x){
+	double temp;
+	temp = sigmoid(x)*(1-sigmoid(x));
 	return temp;
 }
 
